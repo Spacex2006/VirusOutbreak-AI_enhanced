@@ -1,1 +1,1 @@
-
+Project to simulate epidemics on networks
