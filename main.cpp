@@ -17,21 +17,22 @@ const int GENERATIONS = 365;
 
 void simulate(std::vector<Node> &infected, std::vector<Node> &nodes){
     std::vector<Node> dead;
+    std::vector<Node> saved;
     for(int i =0;i<GENERATIONS;i++){
-        simulate_one_generation(infected, nodes, dead);   
+        simulate_one_generation(infected, nodes, dead, saved);   
         std::cout<< i<< " "<< infected.size()<< " "<< dead.size()<< std::endl;
     }
 
 }
 
-void simulate_one_generation(std::vector<Node> &infected, std::vector<Node> &nodes, std::vector<Node> &deads){
+void simulate_one_generation(std::vector<Node> &infected, std::vector<Node> &nodes, std::vector<Node> &deads, std::vector<Node> &saved){
     std::random_device rd;
     std::mt19937 engine(rd());
     std::uniform_real_distribution<double> unif(0.0, 1.0);
     auto end = infected.end();
     std::for_each(std::execution::par, infected.begin(), end, [&](Node &node){
         for(Node &normal_node:nodes){
-            if(normal_node.infected==true|| normal_node.dead==true){
+            if(normal_node.infected==true|| normal_node.dead==true|| normal_node.saved==true){
                 continue;
             }
             else{
@@ -54,6 +55,8 @@ void simulate_one_generation(std::vector<Node> &infected, std::vector<Node> &nod
             double survival_number = unif(engine);  
             if(survival_number<SURVIVAL_RATE){
                 node.infected=false;
+                node.saved=true;
+                saved.push_back(node);
             }
             else{
                 node.dead=true;
