@@ -7,4 +7,5 @@ class Node{
         int time_left;
         bool dead;
         bool infected; 
+        bool saved;
 };
